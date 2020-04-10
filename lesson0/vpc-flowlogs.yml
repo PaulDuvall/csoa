@@ -1,0 +1,16 @@
+Parameters:
+  MyVPC:
+    Type: String
+    Description: VPC to monitor
+  FlowLogsGroup:
+    Type: String
+    Description: Url for IpSet
+Resources:
+    MyFlowLog:
+      Type: AWS::EC2::FlowLog
+      Properties:
+        DeliverLogsPermissionArn: !GetAtt FlowLogRole.Arn
+        LogGroupName: FlowLogsGroup
+        ResourceId: !Ref MyVPC
+        ResourceType: VPC
+        TrafficType: ALL

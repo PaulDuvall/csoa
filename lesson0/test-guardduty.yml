@@ -1,0 +1,64 @@
+Parameters:
+  ThreatIntelSetUrl:
+    Type: String
+    Description: Url for ThreatIntelSet
+  IpSetUrl:
+    Type: String
+    Description: Url for IpSet
+Resources:
+  CloudFormationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - cloudformation.amazonaws.com
+      Path: "/"
+      Policies:
+      - PolicyName: deploy-guardduty
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Action:
+            - guardduty:*
+            - iam:PutRolePolicy
+            Resource: '*'
+            Effect: Allow
+          - Action:
+            - iam:CreateServiceLinkedRole
+            - iam:PutRolePolicy
+            Resource: 'arn:aws:iam::*:role/aws-service-role/guardduty.amazonaws.com/AWSServiceRoleForAmazonGuardDuty*'
+            Condition:
+              StringLike:
+                iam:AWSServiceName: guardduty.amazonaws.com
+            Effect: Allow
+  GuardDutyDetector:
+    Type: AWS::GuardDuty::Detector
+    Properties:
+      Enable: true
+  GuardDutyThreatIntelSet:
+    Type: AWS::GuardDuty::ThreatIntelSet
+    Properties:
+      Activate: true
+      DetectorId: 
+        Ref: GuardDutyDetector
+      Format: TXT
+      Location: 
+        Ref: ThreatIntelSetUrl
+  GuardDutyIpSet:
+    Type: AWS::GuardDuty::IPSet
+    Properties:
+      Activate: true
+      DetectorId: 
+        Ref: GuardDutyDetector
+      Format: TXT
+      Location: 
+        Ref: IpSetUrl
+Outputs:
+  GuardDutyDetector:
+    Description: GuardDuty Detector ID
+    Value:
+      Ref: GuardDutyDetector
