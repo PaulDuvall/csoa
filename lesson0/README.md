@@ -27,10 +27,24 @@ cd ~/environment/csoa/
 aws s3 sync ~/environment/csoa/ s3://csoa-0-$(aws sts get-caller-identity --output text --query 'Account')
 ```
 
-Create the CloudFormation stack.
+Create the CloudFormation stack for Enabling VPC.
+
 
 ```
-aws cloudformation create-stack --stack-name test-guardduty --capabilities CAPABILITY_NAMED_IAM --disable-rollback --template-body file:///home/ec2-user/environment/csoa/test-guardduty.yml --parameters ParameterKey=ThreatIntelSetUrl,ParameterValue=https://s3.amazonaws.com/csoa-0-$(aws sts get-caller-identity --output text --query 'Account')/GuardDutyIpSet.txt ParameterKey=IpSetUrl,ParameterValue=https://s3.amazonaws.com/csoa-0-$(aws sts get-caller-identity --output text --query 'Account')/GuardDutyThreatIntelSet.txt
+aws cloudformation create-stack --stack-name vpc-2azs --capabilities CAPABILITY_NAMED_IAM --disable-rollback --template-body file:///home/ec2-user/environment/aws-security-workshop/lesson0/vpc-2azs.yml
+```
+
+Create the CloudFormation stack for Enabling VPC Flow Logs.
+
+
+```
+aws cloudformation create-stack --stack-name vpc-flow-logs-s3 --capabilities CAPABILITY_NAMED_IAM --disable-rollback --template-body file:///home/ec2-user/environment/aws-security-workshop/lesson0/vpc-flow-logs-s3.yml --parameters ParameterKey=ParentVPCStack,ParameterValue=vpc-2azs
+```
+
+Create the CloudFormation stack for Enabling GuardDuty.
+
+```
+aws cloudformation create-stack --stack-name test-guardduty --capabilities CAPABILITY_NAMED_IAM --disable-rollback --template-body file:///home/ec2-user/environment/aws-security-workshop/lesson0/test-guardduty.yml --parameters ParameterKey=ThreatIntelSetUrl,ParameterValue=https://s3.amazonaws.com/csoa-0-$(aws sts get-caller-identity --output text --query 'Account')/GuardDutyIpSet.txt ParameterKey=IpSetUrl,ParameterValue=https://s3.amazonaws.com/csoa-0-$(aws sts get-caller-identity --output text --query 'Account')/GuardDutyThreatIntelSet.txt
 ```
 
 A ThreatIntelSet consists of known malicious IP addresses. You can provide a list of these IP Addresses in a TXT file. An IP set is a list of trusted IP addresses that have been whitelisted for secure communication with your AWS environment. You can provide a list of these IP Addresses in a TXT file. 
