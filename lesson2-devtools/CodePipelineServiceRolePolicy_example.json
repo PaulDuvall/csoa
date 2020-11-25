@@ -1,0 +1,43 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "codecommit:UploadArchive",
+                "codecommit:CancelUploadArchive",
+                "codecommit:GetCommit",
+                "codecommit:GetUploadArchiveStatus",
+                "codecommit:GetBranch",
+                "codestar-connections:UseConnection",
+                "codebuild:BatchGetBuilds",
+                "codedeploy:CreateDeployment",
+                "codedeploy:GetApplicationRevision",
+                "codedeploy:RegisterApplicationRevision",
+                "codedeploy:GetDeploymentConfig",
+                "codedeploy:GetDeployment",
+                "codebuild:StartBuild",
+                "codedeploy:GetApplication",
+                "s3:*",
+                "cloudformation:*",
+                "ec2:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": "iam:PassRole",
+            "Resource": "*",
+            "Condition": {
+                "StringEqualsIfExists": {
+                    "iam:PassedToService": [
+                        "cloudformation.amazonaws.com",
+                        "ec2.amazonaws.com"
+                    ]
+                }
+            }
+        }
+    ]
+}
