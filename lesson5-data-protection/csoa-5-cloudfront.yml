@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  KMSAdmin:
+    Type: AWS::IAM::Role
+    Properties: 
+      RoleName: !Join ['-', [!Ref 'AWS::StackName', 'KMSKey-admin']]
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Ref 'AWS::AccountId'
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AWSKeyManagementServicePowerUser'
+
+  KMSKey:
+    Type: 'AWS::KMS::Key'
+    Properties:
+      EnableKeyRotation: true
+      KeyPolicy:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: !GetAtt KMSAdmin.Arn
+              AWS: !Join ['', ['arn:aws:iam::', !Ref 'AWS::AccountId', ':root']]
+            Action: 'kms:*'
+            Resource: '*'
+          - Sid: Allow access through S3 for all principals in the account that are authorized to use S3
+            Effect: Allow
+            Principal: 
+              AWS: "*"
+            Action:
+            - kms:Encrypt
+            - kms:Decrypt
+            - kms:ReEncrypt*
+            - kms:GenerateDataKey*
+            - kms:DescribeKey
+            Resource: '*'
+            Condition:
+              StringEquals:
+                kms:CallerAccount: !Ref 'AWS::AccountId'
+                kms:ViaService: !Join ['.', ['s3', !Ref 'AWS::Region', 'amazonaws.com']]
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join ['-', [!Ref 'AWS::StackName', 's3bucket']]
+      BucketEncryption:
+        ServerSideEncryptionConfiguration: 
+          - ServerSideEncryptionByDefault:
+              KMSMasterKeyID: !Ref KMSKey
+              SSEAlgorithm: aws:kms
+  
+              
+  CloudFront:
+    Type: 'AWS::CloudFront::Distribution'
+    Properties:
+      DistributionConfig:
+        Comment: 'How to serve content encrypted with SSE-KMS from S3 using CloudFront'
+        Origins:
+        - DomainName: !Join ['.', [!Ref S3Bucket, 's3', !Ref 'AWS::Region', 'amazonaws.com']]
+          Id: S3-regional-endpoint
+          CustomOriginConfig:
+            OriginProtocolPolicy: https-only
+            OriginSSLProtocols: 
+            - TLSv1.2
+        DefaultCacheBehavior: 
+          TargetOriginId: S3-regional-endpoint
+          ForwardedValues:
+            QueryString: 'false'
+          ViewerProtocolPolicy: redirect-to-https
+        Enabled: 'true'
