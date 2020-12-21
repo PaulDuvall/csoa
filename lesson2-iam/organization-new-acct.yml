@@ -1,0 +1,19 @@
+MyNewAccount:
+    Type: OC::ORG::Account
+    Properties:
+      AccountName: My New Account
+      RootEmail: aws-accounts+new@myorg.com
+      SupportLevel: enterprise
+      Alias: org-newacc
+      PasswordPolicy: !Ref PasswordPolicy
+      Tags:
+        Subdomain: newaccount.myorg.com
+        BudgetThreshold: 100
+        AccountOwnerEmail: olaf@myorg.com
+
+  PasswordPolicy:
+    Type: OC::ORG::PasswordPolicy
+    Properties:
+      MinimumPasswordLength: 12
+      RequireLowercaseCharacters: true
+      RequireNumbers: true
