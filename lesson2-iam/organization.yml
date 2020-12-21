@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09-OC'
+Description: default template generated for organization with main account 111222333444
+
+Organization:
+  MasterAccount:
+    Type: OC::ORG::MasterAccount
+    Properties:
+      AccountName: My Organization Master Account
+      AccountId: '111222333444'
+
+  OrganizationRoot:
+    Type: OC::ORG::OrganizationRoot
+    Properties:
+      DefaultOrganizationAccessRoleName: OrganizationAccountAccessRole
+
+  ProductionOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: production
+      Accounts: !Ref ProductionAccount
+
+  DevelopmentOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: development
+      Accounts:
+        - !Ref DevelopmentAccount
+
+  ProductionAccount:
+    Type: OC::ORG::Account
+    Properties:
+      AccountName: Production Account
+      AccountId: '111111111111'
+      RootEmail: aws-accounts+production@myorg.com
+
+  DevelopmentAccount:
+    Type: OC::ORG::Account
+    Properties:
+      AccountName: Development Account
+      AccountId: '222222222222'
+      RootEmail: aws-accounts+dev@myorg.com
