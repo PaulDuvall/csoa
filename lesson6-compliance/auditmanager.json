@@ -1,0 +1,27 @@
+{
+   "assessmentReportsDestination": {
+      "destination": "s3://csoa-6-123456789012",
+      "destinationType": "S3"
+   },
+   "description": "PoC for running assessments from CLI",
+   "frameworkId": "2ad0cca9-a1bf-3b4a-9769-ef78c51902ba",
+   "name": "csoa-6-cli",
+   "roles": [
+      {
+         "roleArn": "arn:aws:iam::123456789012:role/Admin",
+         "roleType": "PROCESS_OWNER"
+      }
+   ],
+   "scope": {
+      "awsAccounts": [
+         {
+            "id": "123456789012"
+         }
+      ],
+      "awsServices": [
+         {
+            "serviceName": "amazonmq"
+         }
+      ]
+   }
+}

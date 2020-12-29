@@ -7,13 +7,40 @@ MyNewAccount:
       Alias: org-newacc
       PasswordPolicy: !Ref PasswordPolicy
       Tags:
-        Subdomain: newaccount.myorg.com
         BudgetThreshold: 100
-        AccountOwnerEmail: olaf@myorg.com
+        AccountOwnerEmail: yourname@myorg.com
 
   PasswordPolicy:
     Type: OC::ORG::PasswordPolicy
     Properties:
+      MaxPasswordAge: 30
       MinimumPasswordLength: 12
       RequireLowercaseCharacters: true
       RequireNumbers: true
+      RequireSymbols: true
+      RequireUppercaseCharacters: true
+      PasswordReusePrevention: 2
+      AllowUsersToChangePassword: true
+      
+  RestrictUnusedRegionsSCP:
+    Type: OC::ORG::ServiceControlPolicy
+    Properties:
+      PolicyName: RestrictUnusedRegions
+      Description: Restrict Unused regions
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: DenyUnsupportedRegions
+            Effect: Deny
+            NotAction:
+              - 'cloudfront:*'
+              - 'iam:*'
+              - 'route53:*'
+              - 'support:*'
+            Resource: '*'
+            Condition:
+              StringNotEquals:
+                'aws:RequestedRegion':
+                  - eu-west-1
+                  - us-east-1
+                  - eu-central-1

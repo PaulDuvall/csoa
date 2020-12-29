@@ -7,6 +7,11 @@ Organization:
     Properties:
       AccountName: My Organization Master Account
       AccountId: '111222333444'
+      ServiceControlPolicies: !Ref ServiceControlPolicy
+      PasswordPolicy: !Ref PasswordPolicy
+      Tags:
+        budget-alarm-threshold: '100'
+        account-owner-email: my@email.com
 
   OrganizationRoot:
     Type: OC::ORG::OrganizationRoot
