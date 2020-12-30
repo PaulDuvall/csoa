@@ -1,75 +1,25 @@
-AWSTemplateFormatVersion: "2010-09-09"
-Description: "AWS Audit Manager demo"
-
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS Audit Manager demo
 Resources:
-  AssessmentS3Bucket:
-    Type: 'AWS::S3::Bucket'
-
-  AssessmentS3BucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      Bucket: !Ref AssessmentS3Bucket
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Action: ['s3:*']
-            Effect: Allow
-            Resource:
-              - !Sub arn:aws:s3:::${AssessmentS3Bucket}
-              - !Sub arn:aws:s3:::${AssessmentS3Bucket}/*
-            Principal:
-              AWS: [!GetAtt AssessmentRole.Arn]
-              Service: ['auditmanager.amazonaws.com']
-
-  AssessmentRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: ['auditmanager.amazonaws.com']
-            Action: ['sts:AssumeRole']
-      Description: String
-      Policies:
-        - PolicyName: 'AssessmentRole'
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - 'auditmanager:*'
-                  - 'cloudtrail:*'
-                  - 'config:*'
-                  - 'securityhub:*'
-                  - 'ec2:*'
-                  - 's3:*'
-                  - 'iam:*'
-                Resource: '*'
-              - Effect: Allow
-                Action: 'iam:CreateServiceLinkedRole'
-                Resource: '*'
-                Condition:
-                    StringLike:
-                        'iam:AWSserviceName': 'auditmanager.amazonaws.com'
-
   Assessment:
     Type: AWS::AuditManager::Assessment
     Properties:
+      FrameworkId: "2ad0cca9-a1bf-3b4a-9769-ef78c51902ba"
       AssessmentReportsDestination:
-        Destination: !Sub "s3://${AssessmentS3Bucket}"
+        Destination: !Sub s3://csoa-6-${AWS::AccountId}
         DestinationType: S3
-      AWSAccount:
-        - id: !Ref AWS::AccountId
-      FrameworkId: '2ad0cca9-a1bf-3b4a-9769-ef78c51902ba'
-      Name: 'csoa-6-myaudit'
-      Roles:
-        - RoleArn: !GetAtt AssessmentRole.Arn
-          RoleType: PROCESS_OWNER 
+      AwsAccount:
+        Id: !Ref AWS::AccountId
+      Name: !Ref AWS::StackName
       Scope:
-        awsAccounts:
-          - id: !Ref AWS::AccountId
-        awsServices:
-          - serviceName: apigateway
-          - serviceName: appconfig
-          - serviceName: appflow
+        AwsAccounts:
+        - Id: !Ref AWS::AccountId
+        AwsServices:
+        - ServiceName: a4b
+        - ServiceName: acm
+        - ServiceName: acm-pca
+        - ServiceName: amazonmq
+        - ServiceName: amplify
+      Roles:
+      - RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/AuditRole
+        RoleType: PROCESS_OWNER
