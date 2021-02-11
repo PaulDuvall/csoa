@@ -6,16 +6,16 @@ phases:
       python: 3.7
     commands:
       - python --version
-    pre_build:
-        commands:
-        - echo "Pulling the hadolint docker image"
-        - docker pull hadolint/hadolint:v1.16.2
-    build:
-        commands:
-        - echo "Build started on $(date)"
-        - echo "Scanning with Hadolint..."        
-        - result=`docker run --rm -i -v ${PWD}/hadolint.yml:/.hadolint.yaml hadolint/hadolint:v1.16.2 hadolint -f json - < Dockerfile`
-    post_build:
+  pre_build:
+      commands:
+      - echo "Pulling the hadolint docker image"
+      - docker pull hadolint/hadolint:v1.16.2
+  build:
+      commands:
+      - echo "Build started on $(date)"
+      - echo "Scanning with Hadolint..."        
+      - result=`docker run --rm -i -v ${PWD}/hadolint.yml:/.hadolint.yaml hadolint/hadolint:v1.16.2 hadolint -f json - < Dockerfile`
+  post_build:
         commands:
         - echo "Lint Results:"
         - echo $result | jq . 
