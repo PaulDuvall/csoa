@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Run cfn_nag as part of AWS CodeBuild in CodePipeline
+Description: Run Hadolint as part of AWS CodeBuild in CodePipeline
 Parameters:
   EmailAddress:
     Description: Email Address for sending SNS notifications for CodeCommit
@@ -33,7 +33,7 @@ Resources:
     Properties:
       RepositoryName:
         Ref: AWS::StackName
-      RepositoryDescription: CodeCommit Repository for cfn_nag solution
+      RepositoryDescription: CodeCommit Repository for Container Security solution
       Code:
         S3:
           Bucket:
@@ -109,7 +109,7 @@ Resources:
             Resource: "*"
             Effect: Allow
           Version: '2012-10-17'
-  CodeBuildCfnNag:
+  CodeBuildContainerSec:
     Type: AWS::CodeBuild::Project
     Properties:
       Name:
@@ -163,7 +163,7 @@ Resources:
         Actions:
         - InputArtifacts:
           - Name: MyApp
-          Name: cfn_nag
+          Name: Hadolint
           ActionTypeId:
             Category: Test
             Owner: AWS
@@ -172,7 +172,7 @@ Resources:
           OutputArtifacts: []
           Configuration:
             ProjectName:
-              Ref: CodeBuildCfnNag
+              Ref: CodeBuildContainerSec
           RunOrder: 1
         - InputArtifacts:
           - Name: MyApp
@@ -186,7 +186,7 @@ Resources:
           - Name: MyAppBuild
           Configuration:
             ProjectName:
-              Ref: CodeBuildCfnNag
+              Ref: CodeBuildContainerSec
           RunOrder: 1
       - Name: Deploy
         Actions:
