@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Run Hadolint as part of AWS CodeBuild in CodePipeline
+Description: Run DockerLint as part of AWS CodeBuild in CodePipeline
 Parameters:
   EmailAddress:
     Description: Email Address for sending SNS notifications for CodeCommit
@@ -109,7 +109,7 @@ Resources:
             Resource: "*"
             Effect: Allow
           Version: '2012-10-17'
-  CodeBuildHadolint:
+  CodeBuildDockerLint:
     Type: AWS::CodeBuild::Project
     Properties:
       Description: Check for Dockerfile errors
@@ -189,7 +189,7 @@ Resources:
         Actions:
         - InputArtifacts:
           - Name: MyApp
-          Name: Hadolint
+          Name: DockerLint
           ActionTypeId:
             Category: Test
             Owner: AWS
@@ -198,7 +198,7 @@ Resources:
           OutputArtifacts: []
           Configuration:
             ProjectName:
-              Ref: CodeBuildHadolint
+              Ref: CodeBuildDockerLint
           RunOrder: 1
         - InputArtifacts:
           - Name: MyApp
