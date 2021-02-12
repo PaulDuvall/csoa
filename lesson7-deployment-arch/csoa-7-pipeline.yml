@@ -112,8 +112,6 @@ Resources:
   CodeBuildHadolint:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name:
-        Ref: AWS::StackName
       Description: Check for Dockerfile errors
       ServiceRole:
         Fn::GetAtt:
