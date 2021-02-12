@@ -115,7 +115,6 @@ Resources:
       Name:
         Ref: AWS::StackName
       Description: Build application
-      PrivilegedMode: true
       ServiceRole:
         Fn::GetAtt:
         - CodeBuildRole
@@ -123,6 +122,7 @@ Resources:
       Artifacts:
         Type: NO_ARTIFACTS
       Environment:
+        PrivilegedMode: true
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
         Image: "aws/codebuild/amazonlinux2-x86_64-standard:3.0"
