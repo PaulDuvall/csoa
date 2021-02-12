@@ -185,7 +185,7 @@ Resources:
             RepositoryName:
               Ref: AWS::StackName
           RunOrder: 1
-      - Name: Build
+      - Name: SecurityAnalysis
         Actions:
         - InputArtifacts:
           - Name: MyApp
