@@ -14,7 +14,7 @@ phases:
       commands:
       - echo "Build started on $(date)"
       - echo "Scanning with Hadolint..."        
-      - result=`docker run --rm -i -v ${PWD}/hadolint.yml:/.hadolint.yaml hadolint/hadolint:v1.16.2 hadolint -f json - < Dockerfile`
+      - result=`docker run --rm -i -v ${PWD}/hadolint.yml:/.hadolint.yaml hadolint/hadolint:v1.16.2 hadolint -f json - < ${PWD}/Dockerfile`
   post_build:
         commands:
         - echo "Lint Results:"

@@ -149,6 +149,13 @@ Resources:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
         Image: "aws/codebuild/amazonlinux2-x86_64-standard:3.0"
+        EnvironmentVariables:
+          - Name: AWS_ACCOUNT_ID
+            Type: PLAINTEXT
+            Value: !Ref "AWS::AccountId"
+          - Name: APP_REPO_URL
+            Type: PLAINTEXT
+            Value: !GetAtt CodeCommitRepo.CloneUrlHttp
       Source:
         BuildSpec: buildspec_secrets.yml
         Location: !Sub https://git-codecommit.${AWS::Region}.amazonaws.com/v1/repos/${AWS::StackName}/
