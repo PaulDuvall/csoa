@@ -115,6 +115,7 @@ Resources:
       Name:
         Ref: AWS::StackName
       Description: Build application
+      PrivilegedMode: true
       ServiceRole:
         Fn::GetAtt:
         - CodeBuildRole
