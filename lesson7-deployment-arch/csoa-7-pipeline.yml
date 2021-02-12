@@ -137,8 +137,6 @@ Resources:
   CodeBuildSecrets:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name:
-        Ref: AWS::StackName
       Description: Check for secrets in files
       ServiceRole:
         Fn::GetAtt:
@@ -156,9 +154,6 @@ Resources:
         Location: !Sub https://git-codecommit.${AWS::Region}.amazonaws.com/v1/repos/${AWS::StackName}/
         Type: CODECOMMIT
       TimeoutInMinutes: 10 
-      Tags:
-      - Key: Owner
-        Value: MyCodeBuildProject
   PipelineBucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
