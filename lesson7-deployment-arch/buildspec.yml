@@ -8,7 +8,7 @@ phases:
       - python --version
   pre_build:
       commands:
-      - sudo dockerd
+      - dockerd
       - echo "Pulling the hadolint docker image"
       - docker pull hadolint/hadolint:v1.16.2
   build:
